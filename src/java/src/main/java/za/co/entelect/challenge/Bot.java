@@ -11,13 +11,21 @@ import static java.lang.Math.max;
 public class Bot {
 
     private static final int maxSpeed = 9;
-    private List<Integer> directionList = new ArrayList<>();
+    private List<Command> directionList = new ArrayList<>();
 
     private Random random;
     private GameState gameState;
     private Car opponent;
     private Car myCar;
+    private final static Command ACCELERATE = new AccelerateCommand();
+    private final static Command LIZARD = new LizardCommand();
+    private final static Command OIL = new OilCommand();
+    private final static Command BOOST = new BoostCommand();
+    private final static Command EMP = new EmpCommand();
     private final static Command FIX = new FixCommand();
+
+    private final static Command TURN_RIGHT = new ChangeLaneCommand(1);
+    private final static Command TURN_LEFT = new ChangeLaneCommand(-1);
 
     public Bot(Random random, GameState gameState) {
         this.random = random;
@@ -25,20 +33,20 @@ public class Bot {
         this.myCar = gameState.player;
         this.opponent = gameState.opponent;
 
-        directionList.add(-1);
-        directionList.add(1);
+        directionList.add(TURN_LEFT);
+        directionList.add(TURN_RIGHT);
     }
 
     public Command run() {
         List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block);
         if (myCar.damage >= 5) {
-            return new FixCommand();
+            return FIX;
         }
         if (blocks.contains(Terrain.MUD)) {
             int i = random.nextInt(directionList.size());
-            return new ChangeLaneCommand(directionList.get(i));
+            return directionList.get(i);
         }
-        return new AccelerateCommand();
+        return ACCELERATE;
     }
 
     /**
