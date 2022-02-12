@@ -40,6 +40,8 @@ public class Bot {
 
     public Command run() {
         List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block);
+        List<Object> nextBlocks = blocks.subList(0,1);
+
         if (((myCar.damage == 2 && myCar.speed == 8) ||
                 (myCar.damage == 3 && myCar.speed == 6) ||
                 (myCar.damage == 4 && myCar.speed == 3) ||
@@ -52,8 +54,14 @@ public class Bot {
         if (myCar.damage == 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
             return BOOST;
         }
-        if (blocks.contains(Terrain.MUD)) {
+        if (blocks.contains(Terrain.MUD) || nextBlocks.contains(Terrain.WALL)) {
             int i = random.nextInt(directionList.size());
+            if (myCar.position.lane == 1) {
+                return TURN_RIGHT;
+            }
+            if (myCar.position.lane == 4) {
+                return TURN_LEFT;
+            }
             return directionList.get(i);
         }
         return ACCELERATE;
