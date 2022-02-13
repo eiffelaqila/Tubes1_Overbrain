@@ -43,19 +43,13 @@ public class Bot {
         List<Object> leftBlocks;
         List<Object> rightBlocks;
 
-        if (((myCar.damage == 2 && myCar.speed == 8) ||
-                (myCar.damage == 3 && myCar.speed == 6) ||
-                (myCar.damage == 4 && myCar.speed == 3) ||
-                (myCar.damage >= 5)) && (!hasPowerUp(PowerUps.BOOST, myCar.powerups))) {
+        if (doSaveTheCar()) {
             return FIX;
         }
-        if (myCar.damage > 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
-            return FIX;
-        }
-        if (myCar.damage == 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups) && myCar.speed != 15) {
+        else if (doTurbo()) {
             return BOOST;
         }
-        if (myCar.speed != 0 && (blocks.contains(Terrain.MUD) || blocks.contains(Terrain.WALL))) {
+        else if (myCar.speed != 0 && (blocks.contains(Terrain.MUD) || blocks.contains(Terrain.WALL))) {
             int i = random.nextInt(directionList.size());
             if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                 if (myCar.position.lane == 1) {
@@ -108,6 +102,32 @@ public class Bot {
         }
         return ACCELERATE;
     }
+ 
+    public boolean doSaveTheCar() {
+        /* Fungsi ini bertujuan untuk memprioritaskan mobil untuk melakukan FIX ketika mobil:
+           - menerima damage >= 2 dan telah mencapai max speed atau 
+           - menerima damage > 0 dan memiliki powerups: Boost */
+        if (((myCar.damage == 2 && myCar.speed == 8) ||
+                (myCar.damage == 3 && myCar.speed == 6) ||
+                (myCar.damage == 4 && myCar.speed == 3) ||
+                (myCar.damage >= 5)) && (!hasPowerUp(PowerUps.BOOST, myCar.powerups))) {
+            return true;
+        }
+        else if (myCar.damage > 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public boolean doTurbo() {
+        /* Fungsi ini bertujuan untuk memprioritaskan penggunaan Boost ketika mobil
+           memiliki boost, tidak menerima damage, dan tidak berada di kecepatan maksimal */
+        if (myCar.damage == 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups) && myCar.speed != 15) {
+            return true;
+        }
+    }
 
     private Boolean hasPowerUp(PowerUps powerUpToCheck, PowerUps[] available) {
         for (PowerUps powerUp: available) {
@@ -122,7 +142,7 @@ public class Bot {
     }
 
     private int getSpeedAfterAccelerate() {
-        if (myCar.speed == 3 || myCar.speed == 5) {
+        if (myCar.speed2 == 3 || myCar.speed == 5) {
             return 6;
         } else if (myCar.speed == 6) {
             return 8;
