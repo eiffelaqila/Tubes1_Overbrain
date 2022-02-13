@@ -39,7 +39,7 @@ public class Bot {
     }
 
     public Command run() {
-        List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block);
+        List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block, getSpeedAfterAccelerate());
         List<Object> leftBlocks;
         List<Object> rightBlocks;
 
@@ -55,26 +55,26 @@ public class Bot {
         if (myCar.damage == 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups) && myCar.speed != 15) {
             return BOOST;
         }
-        if (blocks.contains(Terrain.MUD) || blocks.contains(Terrain.WALL)) {
+        if (myCar.speed != 0 && (blocks.contains(Terrain.MUD) || blocks.contains(Terrain.WALL))) {
             int i = random.nextInt(directionList.size());
             if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                 if (myCar.position.lane == 1) {
-                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block);
+                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, getSpeedAfterAccelerate());
                     if (rightBlocks.contains(Terrain.MUD) || rightBlocks.contains(Terrain.WALL)) {
                         return LIZARD;
                     } else {
                         return TURN_RIGHT;
                     }
                 } else if (myCar.position.lane == 4) {
-                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block);
+                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, getSpeedAfterAccelerate());
                     if (leftBlocks.contains(Terrain.MUD) || leftBlocks.contains(Terrain.WALL)) {
                         return LIZARD;
                     } else {
                         return TURN_LEFT;
                     }
                 } else {
-                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block);
-                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block);
+                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, getSpeedAfterAccelerate());
+                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, getSpeedAfterAccelerate());
                     if (leftBlocks.contains(Terrain.MUD) || leftBlocks.contains(Terrain.WALL)) {
                         if (rightBlocks.contains(Terrain.MUD) || rightBlocks.contains(Terrain.WALL)) {
                             return LIZARD;
@@ -91,8 +91,8 @@ public class Bot {
                 } else if (myCar.position.lane == 4) {
                     return TURN_LEFT;
                 } else {
-                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block);
-                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block);
+                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, getSpeedAfterAccelerate());
+                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, getSpeedAfterAccelerate());
                     if (leftBlocks.contains(Terrain.MUD) || leftBlocks.contains(Terrain.WALL)) {
                         if (!rightBlocks.contains(Terrain.MUD) || !rightBlocks.contains(Terrain.WALL)) {
                             return TURN_RIGHT;
@@ -121,17 +121,31 @@ public class Bot {
         return false;
     }
 
+    private int getSpeedAfterAccelerate() {
+        if (myCar.speed == 3 || myCar.speed == 5) {
+            return 6;
+        } else if (myCar.speed == 6) {
+            return 8;
+        } else if (myCar.speed == 8 || (myCar.speed == 9 && !hasPowerUp(PowerUps.BOOST, myCar.powerups))) {
+            return 9;
+        } else if ((myCar.speed == 9 && hasPowerUp(PowerUps.BOOST, myCar.powerups)) || myCar.speed == 15) {
+            return 15;
+        } else {
+            return 0;
+        }
+    }
+
     /**
      * Returns map of blocks and the objects in the for the current lanes, returns the amount of blocks that can be
      * traversed at max speed.
      **/
-    private List<Object> getBlocksInFront(int lane, int block) {
+    private List<Object> getBlocksInFront(int lane, int block, int speed) {
         List<Lane[]> map = gameState.lanes;
         List<Object> blocks = new ArrayList<>();
         int startBlock = map.get(0)[0].position.block;
 
         Lane[] laneList = map.get(lane - 1);
-        for (int i = max(block - startBlock, 0); i <= block - startBlock + Bot.maxSpeed; i++) {
+        for (int i = max(block - startBlock, 0); i <= block - startBlock + speed; i++) {
             if (laneList[i] == null || laneList[i].terrain == Terrain.FINISH) {
                 break;
             }
