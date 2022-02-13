@@ -40,6 +40,8 @@ public class Bot {
 
     public Command run() {
         List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block);
+        List<Object> leftBlocks;
+        List<Object> rightBlocks;
         List<Object> nextBlocks = blocks.subList(0,1);
 
         if (((myCar.damage == 2 && myCar.speed == 8) ||
@@ -56,11 +58,52 @@ public class Bot {
         }
         if (blocks.contains(Terrain.MUD) || nextBlocks.contains(Terrain.WALL)) {
             int i = random.nextInt(directionList.size());
-            if (myCar.position.lane == 1) {
-                return TURN_RIGHT;
-            }
-            if (myCar.position.lane == 4) {
-                return TURN_LEFT;
+            if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
+                if (myCar.position.lane == 1) {
+                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block);
+                    if (rightBlocks.contains(Terrain.MUD) || rightBlocks.contains(Terrain.WALL)) {
+                        return LIZARD;
+                    } else {
+                        return TURN_RIGHT;
+                    }
+                } else if (myCar.position.lane == 4) {
+                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block);
+                    if (leftBlocks.contains(Terrain.MUD) || leftBlocks.contains(Terrain.WALL)) {
+                        return LIZARD;
+                    } else {
+                        return TURN_LEFT;
+                    }
+                } else {
+                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block);
+                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block);
+                    if (leftBlocks.contains(Terrain.MUD) || leftBlocks.contains(Terrain.WALL)) {
+                        if (rightBlocks.contains(Terrain.MUD) || rightBlocks.contains(Terrain.WALL)) {
+                            return LIZARD;
+                        } else {
+                            return TURN_RIGHT;
+                        }
+                    } else {
+                        return TURN_LEFT;
+                    }
+                }
+            } else {
+                if (myCar.position.lane == 1) {
+                    return TURN_RIGHT;
+                } else if (myCar.position.lane == 4) {
+                    return TURN_LEFT;
+                } else {
+                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block);
+                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block);
+                    if (leftBlocks.contains(Terrain.MUD) || leftBlocks.contains(Terrain.WALL)) {
+                        if (!rightBlocks.contains(Terrain.MUD) || !rightBlocks.contains(Terrain.WALL)) {
+                            return TURN_RIGHT;
+                        }
+                    } else if (rightBlocks.contains(Terrain.MUD) || rightBlocks.contains(Terrain.WALL)) {
+                        if (!leftBlocks.contains(Terrain.MUD) || !leftBlocks.contains(Terrain.WALL)) {
+                            return TURN_LEFT;
+                        }
+                    }
+                }
             }
             return directionList.get(i);
         }
@@ -69,7 +112,7 @@ public class Bot {
 
     private Boolean hasPowerUp(PowerUps powerUpToCheck, PowerUps[] available) {
         for (PowerUps powerUp: available) {
-            if (powerUp == null) {
+            if (powerUp.equals(null)) {
                 return false;
             }
             if (powerUp.equals(powerUpToCheck)) {
@@ -99,5 +142,4 @@ public class Bot {
         }
         return blocks;
     }
-
 }
