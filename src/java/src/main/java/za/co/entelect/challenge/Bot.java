@@ -147,6 +147,49 @@ public class Bot {
             return ACCELERATE;
         }
 
+        /* Prioritas 5 & Strategi Get Power Up */
+        if (myCar.position.lane == 1) {
+            rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, myCar.speed - 1);
+            if (!isPowerUp(blocks)) {
+                if (isPowerUp(rightBlocks) && !isBlocks(rightBlocks)) {
+                    return TURN_RIGHT;
+                }
+            }
+        } else if (myCar.position.lane == 4) {
+            leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, myCar.speed - 1);
+            if (!isPowerUp(blocks)) {
+                if (isPowerUp(leftBlocks) && !isBlocks(leftBlocks)) {
+                    return TURN_LEFT;
+                }
+            }
+        } else {
+            leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, myCar.speed - 1);
+            rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, myCar.speed - 1);
+            if (isBlocks(blocks)) {
+                if (!isPowerUp(rightBlocks)) {
+                    if (isPowerUp(leftBlocks)) {
+                        return TURN_LEFT;
+                    }
+                } else {
+                    if (!isBlocks(rightBlocks)) {
+                        return TURN_RIGHT;
+                    }
+                }
+            } else {
+                if (!isPowerUp(blocks)) {
+                    if (!isPowerUp(rightBlocks)) {
+                        if (isPowerUp(leftBlocks) && !isBlocks(leftBlocks)) {
+                            return TURN_LEFT;
+                        }
+                    } else {
+                        if (!isBlocks(rightBlocks)) {
+                            return TURN_RIGHT;
+                        }
+                    }
+                }
+            }
+        }
+        
         return ACCELERATE;
     }
 
