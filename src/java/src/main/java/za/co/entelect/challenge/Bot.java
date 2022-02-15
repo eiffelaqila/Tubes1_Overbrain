@@ -39,96 +39,11 @@ public class Bot {
     }
 
     public Command run() {
-        List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block, getSpeedAfterAccelerate());
-        List<Object> leftBlocks;
-        List<Object> rightBlocks;
-
-        if (doSaveTheCar()) {
-            return FIX;
-        }
-        else if (doTurbo()) {
-            return BOOST;
-        }
-        else if (myCar.speed != 0 && (blocks.contains(Terrain.MUD) || blocks.contains(Terrain.WALL))) {
-            int i = random.nextInt(directionList.size());
-            if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
-                if (myCar.position.lane == 1) {
-                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, getSpeedAfterAccelerate());
-                    if (rightBlocks.contains(Terrain.MUD) || rightBlocks.contains(Terrain.WALL)) {
-                        return LIZARD;
-                    } else {
-                        return TURN_RIGHT;
-                    }
-                } else if (myCar.position.lane == 4) {
-                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, getSpeedAfterAccelerate());
-                    if (leftBlocks.contains(Terrain.MUD) || leftBlocks.contains(Terrain.WALL)) {
-                        return LIZARD;
-                    } else {
-                        return TURN_LEFT;
-                    }
-                } else {
-                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, getSpeedAfterAccelerate());
-                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, getSpeedAfterAccelerate());
-                    if (leftBlocks.contains(Terrain.MUD) || leftBlocks.contains(Terrain.WALL)) {
-                        if (rightBlocks.contains(Terrain.MUD) || rightBlocks.contains(Terrain.WALL)) {
-                            return LIZARD;
-                        } else {
-                            return TURN_RIGHT;
-                        }
-                    } else {
-                        return TURN_LEFT;
-                    }
-                }
-            } else {
-                if (myCar.position.lane == 1) {
-                    return TURN_RIGHT;
-                } else if (myCar.position.lane == 4) {
-                    return TURN_LEFT;
-                } else {
-                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, getSpeedAfterAccelerate());
-                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, getSpeedAfterAccelerate());
-                    if (leftBlocks.contains(Terrain.MUD) || leftBlocks.contains(Terrain.WALL)) {
-                        if (!rightBlocks.contains(Terrain.MUD) || !rightBlocks.contains(Terrain.WALL)) {
-                            return TURN_RIGHT;
-                        }
-                    } else if (rightBlocks.contains(Terrain.MUD) || rightBlocks.contains(Terrain.WALL)) {
-                        if (!leftBlocks.contains(Terrain.MUD) || !leftBlocks.contains(Terrain.WALL)) {
-                            return TURN_LEFT;
-                        }
-                    }
-                }
-            }
-            return directionList.get(i);
-        }
-        return ACCELERATE;
-    }
- 
-    public boolean doSaveTheCar() {
-        /* Fungsi ini bertujuan untuk memprioritaskan mobil untuk melakukan FIX ketika mobil:
-           - menerima damage >= 2 dan telah mencapai max speed atau 
-           - menerima damage > 0 dan memiliki powerups: Boost */
-        if (((myCar.damage == 2 && myCar.speed == 8) ||
-                (myCar.damage == 3 && myCar.speed == 6) ||
-                (myCar.damage == 4 && myCar.speed == 3) ||
-                (myCar.damage >= 5)) && (!hasPowerUp(PowerUps.BOOST, myCar.powerups))) {
-            return true;
-        }
-        else if (myCar.damage > 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        Command active = doSaveTheCar();
+        return active;
     }
 
-    public boolean doTurbo() {
-        /* Fungsi ini bertujuan untuk memprioritaskan penggunaan Boost ketika mobil
-           memiliki boost, tidak menerima damage, dan tidak berada di kecepatan maksimal */
-        if (myCar.damage == 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups) && myCar.speed != 15) {
-            return true;
-        }
-    }
-
+    /* Mengembalikan true jika mobil memiliki powerUps powerUpToCheck */
     private Boolean hasPowerUp(PowerUps powerUpToCheck, PowerUps[] available) {
         for (PowerUps powerUp: available) {
             if (powerUp.equals(null)) {
@@ -141,8 +56,9 @@ public class Bot {
         return false;
     }
 
+    /* Mengembalikan kecepatan mobil setelah accelerate */
     private int getSpeedAfterAccelerate() {
-        if (myCar.speed2 == 3 || myCar.speed == 5) {
+        if (myCar.speed == 3 || myCar.speed == 5) {
             return 6;
         } else if (myCar.speed == 6) {
             return 8;
@@ -155,10 +71,27 @@ public class Bot {
         }
     }
 
-    /**
-     * Returns map of blocks and the objects in the for the current lanes, returns the amount of blocks that can be
-     * traversed at max speed.
-     **/
+    /* Mengembalikan jumlah damage dari jalur di depan mobil */
+    private int getDamageInFront(int lane, int block, int speed) {
+        List<Lane[]> map = gameState.lanes;
+        int sumDamage = 0;
+        int startBlock = map.get(0)[0].position.block;
+
+        Lane[] laneList = map.get(lane - 1);
+        for (int i = max(block - startBlock, 0); i <= block - startBlock + speed; i++) {
+            if (laneList[i] == null || laneList[i].terrain == Terrain.FINISH) {
+                break;
+            }
+            if (laneList[i].terrain == Terrain.MUD || laneList[i].terrain == Terrain.OIL_SPILL) {
+                sumDamage += 1;
+            } else if (laneList[i].terrain == Terrain.WALL) {
+                sumDamage += 2;
+            }
+        }
+        return sumDamage;
+    }
+
+    /* Mengembalikan block di depan mobil pada kecepatan speed */
     private List<Object> getBlocksInFront(int lane, int block, int speed) {
         List<Lane[]> map = gameState.lanes;
         List<Object> blocks = new ArrayList<>();
@@ -169,10 +102,131 @@ public class Bot {
             if (laneList[i] == null || laneList[i].terrain == Terrain.FINISH) {
                 break;
             }
-
             blocks.add(laneList[i].terrain);
-
         }
         return blocks;
+    }
+
+    /* Fungsi yang mengembalikan true jika block berisi obstacle */
+    private boolean isBlocks(List<Object> block) {
+        return (block.contains(Terrain.MUD) || block.contains(Terrain.WALL) || block.contains(Terrain.OIL_SPILL));
+    }
+
+    /* Fungsi yang memprioritaskan Command FIX */
+    public Command doSaveTheCar() {
+        if (((myCar.damage == 2 && myCar.speed == 8) ||
+                (myCar.damage == 3 && myCar.speed == 6) ||
+                (myCar.damage == 4 && myCar.speed == 3) ||
+                (myCar.damage >= 5)) && (!hasPowerUp(PowerUps.BOOST, myCar.powerups))) {
+            return FIX;
+        } else if (myCar.damage > 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
+            return FIX;
+        } else {
+            return doTurbo();
+        }
+    }
+
+    /* Fungsi yang memprioritaskan Command BOOST */
+    public Command doTurbo() {
+        List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block, 15);
+        if (myCar.damage == 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups) && myCar.speed != 15 && !isBlocks(blocks)) {
+            return BOOST;
+        } else {
+            return doAvoid();
+        }
+    }
+
+    /* Fungsi yang memprioritaskan mobil untuk menghindari obstacle */
+    public Command doAvoid() {
+        List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block, getSpeedAfterAccelerate());
+        List<Object> leftBlocks;
+        List<Object> rightBlocks;
+        int countLeft, countRight;
+        int countFront = getDamageInFront(myCar.position.lane , myCar.position.block, getSpeedAfterAccelerate());
+
+        if (myCar.speed != 0 && isBlocks(blocks)) {
+            if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
+                if (myCar.position.lane == 1) {
+                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, myCar.speed - 1);
+                    if (isBlocks(rightBlocks)) {
+                        return LIZARD;
+                    } else {
+                        return TURN_RIGHT;
+                    }
+                } else if (myCar.position.lane == 4) {
+                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, myCar.speed - 1);
+                    if (isBlocks(leftBlocks)) {
+                        return LIZARD;
+                    } else {
+                        return TURN_LEFT;
+                    }
+                } else {
+                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, myCar.speed - 1);
+                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, myCar.speed - 1);
+                    if (isBlocks(leftBlocks)) {
+                        if (isBlocks(rightBlocks)) {
+                            return LIZARD;
+                        } else {
+                            return TURN_RIGHT;
+                        }
+                    } else {
+                        return TURN_LEFT;
+                    }
+                }
+            } else {
+                if (myCar.position.lane == 1) {
+                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, myCar.speed - 1);
+                    if (!isBlocks(rightBlocks)) {
+                        return TURN_RIGHT;
+                    } else {
+                        countRight =  getDamageInFront(myCar.position.lane + 1, myCar.position.block, myCar.speed - 1);
+                        if (countRight < countFront) {
+                            return TURN_RIGHT;
+                        } else {
+                            return doSpeed();
+                        }
+                    }
+                } else if (myCar.position.lane == 4) {
+                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, myCar.speed - 1);
+                    if (!isBlocks(leftBlocks)) {
+                        return TURN_LEFT;
+                    } else {
+                        countLeft =  getDamageInFront(myCar.position.lane - 1, myCar.position.block, myCar.speed - 1);
+                        if (countLeft < countFront) {
+                            return TURN_LEFT;
+                        } else {
+                            return doSpeed();
+                        }
+                    }
+                } else {
+                    leftBlocks = getBlocksInFront(myCar.position.lane - 1, myCar.position.block, myCar.speed - 1);
+                    rightBlocks = getBlocksInFront(myCar.position.lane + 1, myCar.position.block, myCar.speed - 1);
+                    if (isBlocks(leftBlocks)) {
+                        if (!isBlocks(rightBlocks)) {
+                            return TURN_RIGHT;
+                        } else {
+                            countRight =  getDamageInFront(myCar.position.lane + 1, myCar.position.block, myCar.speed - 1);
+                            countLeft =  getDamageInFront(myCar.position.lane - 1, myCar.position.block, myCar.speed - 1);
+                            if (countLeft <= countRight && countLeft < countFront) {
+                                return TURN_LEFT;
+                            } else if (countRight < countLeft && countRight < countFront) {
+                                return TURN_RIGHT;
+                            } else {
+                                return doSpeed();
+                            }
+                        }
+                    } else {
+                        return TURN_LEFT;
+                    }
+                }
+            }
+        } else {
+            return doSpeed();
+        }
+    }
+
+    /* Fungsi yang memprioritaskan Command ACCELERATE */
+    public Command doSpeed() {
+        return ACCELERATE;
     }
 }
