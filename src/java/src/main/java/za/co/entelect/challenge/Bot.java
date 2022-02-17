@@ -24,6 +24,7 @@ public class Bot {
     private final static Command BOOST = new BoostCommand();
     private final static Command EMP = new EmpCommand();
     private final static Command FIX = new FixCommand();
+    private static Command TWEET;
 
     private final static Command TURN_RIGHT = new ChangeLaneCommand(1);
     private final static Command TURN_LEFT = new ChangeLaneCommand(-1);
@@ -39,11 +40,11 @@ public class Bot {
     }
 
     public Command run() {
-        List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block, getSpeedAfterAccelerate());
+        List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block, getSpeedAfterAccelerate(myCar));
         List<Object> leftBlocks;
         List<Object> rightBlocks;
         int countLeft, countRight;
-        int countFront = getDamageInFront(myCar.position.lane , myCar.position.block, getSpeedAfterAccelerate());
+        int countFront = getDamageInFront(myCar.position.lane , myCar.position.block, getSpeedAfterAccelerate(myCar));
 
         /* Prioritas 1 & Strategi Save The Car */
         if (((myCar.damage == 2 && myCar.speed == 8) ||
@@ -89,10 +90,6 @@ public class Bot {
                     } else {
                         if (isBlocks(rightBlocks)) {
                             return TURN_LEFT;
-                        } else {
-                            if (isPowerUp(leftBlocks)) {
-                                return TURN_LEFT;
-                            }
                         }
                     }
                 }
@@ -169,9 +166,21 @@ public class Bot {
                 if (!isPowerUp(rightBlocks)) {
                     if (isPowerUp(leftBlocks)) {
                         return TURN_LEFT;
+                    } else {
+                        if (myCar.position.lane == 2) {
+                            return TURN_RIGHT;
+                        } else {
+                            return TURN_LEFT;
+                        }
                     }
                 } else {
-                    if (!isBlocks(rightBlocks)) {
+                    if (isPowerUp(leftBlocks)) {
+                        if (myCar.position.lane == 2) {
+                            return TURN_RIGHT;
+                        } else {
+                            return TURN_LEFT;
+                        }
+                    } else {
                         return TURN_RIGHT;
                     }
                 }
@@ -189,7 +198,25 @@ public class Bot {
                 }
             }
         }
-        
+
+        /* Prioritas 6 */
+
+        /* Strategi USE_TWEET, USE_OIL, USE_EMP */
+        if (hasPowerUp(PowerUps.TWEET, myCar.powerups)) {
+            TWEET = new TweetCommand(opponent.position.lane, opponent.position.block + getSpeedAfterAccelerate(opponent) + 1);
+            return TWEET;
+        }
+
+        if (myCar.position.block > opponent.position.block + opponent.speed) {
+            if (hasPowerUp(PowerUps.OIL, myCar.powerups)) {
+                return OIL;
+            }
+        } else {
+            if (myCar.position.lane == opponent.position.lane && hasPowerUp(PowerUps.EMP, myCar.powerups)) {
+                return EMP;
+            }
+        }
+
         return ACCELERATE;
     }
 
@@ -207,17 +234,17 @@ public class Bot {
     }
 
     /* Mengembalikan kecepatan mobil setelah accelerate */
-    private int getSpeedAfterAccelerate() {
-        if (myCar.speed == 3 || myCar.speed == 5) {
+    private int getSpeedAfterAccelerate(Car car) {
+        if (car.speed == 3 || car.speed == 5) {
             return 6;
-        } else if (myCar.speed == 6) {
+        } else if (car.speed == 6) {
             return 8;
-        } else if (myCar.speed == 8 || (myCar.speed == 9 && !hasPowerUp(PowerUps.BOOST, myCar.powerups))) {
+        } else if (car.speed == 8 || (car.speed == 9 && !hasPowerUp(PowerUps.BOOST, car.powerups))) {
             return 9;
-        } else if ((myCar.speed == 9 && hasPowerUp(PowerUps.BOOST, myCar.powerups)) || myCar.speed == 15) {
+        } else if ((car.speed == 9 && hasPowerUp(PowerUps.BOOST, car.powerups)) || car.speed == 15) {
             return 15;
         } else {
-            return 0;
+            return 3;
         }
     }
 
@@ -234,7 +261,7 @@ public class Bot {
             }
             if (laneList[i].terrain == Terrain.MUD || laneList[i].terrain == Terrain.OIL_SPILL) {
                 sumDamage += 1;
-            } else if (laneList[i].terrain == Terrain.WALL) {
+            } else if (laneList[i].terrain == Terrain.WALL || laneList[i].terrain == Terrain.TRUCK) {
                 sumDamage += 2;
             }
         }
@@ -259,7 +286,7 @@ public class Bot {
 
     /* Fungsi yang mengembalikan true jika block berisi obstacle */
     private boolean isBlocks(List<Object> block) {
-        return (block.contains(Terrain.MUD) || block.contains(Terrain.WALL) || block.contains(Terrain.OIL_SPILL));
+        return (block.contains(Terrain.MUD) || block.contains(Terrain.WALL) || block.contains(Terrain.OIL_SPILL) || block.contains(Terrain.TRUCK));
     }
 
     /* Fungsi yang mengembalikan true jika block berisi powerup */
