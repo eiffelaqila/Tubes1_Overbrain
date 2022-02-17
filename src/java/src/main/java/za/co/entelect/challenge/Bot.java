@@ -51,12 +51,7 @@ public class Bot {
             return FIX;
         }
 
-        /* Prioritas 2 & Strategi Turbo */
-        if (myCar.damage == 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups) && myCar.speed != 15 && !isBlocks(blocks)) {
-            return BOOST;
-        }
-
-        /* Prioritas 3 & Strategi Avoid */
+        /* Prioritas 2 & Strategi Avoid */
         if (myCar.speed != 0 && isBlocks(blocks)) {
             if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                 if (myCar.position.lane == 1) {
@@ -131,6 +126,11 @@ public class Bot {
                     }
                 }
             }
+        }
+
+        /* Prioritas 3 & Strategi Turbo */
+        if (myCar.damage == 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups) && myCar.speed != 15 && !isBlocks(blocks)) {
+            return BOOST;
         }
 
         /* Prioritas 4 & Strategi Max Speed */
