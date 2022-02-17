@@ -12,8 +12,6 @@ import static java.lang.Math.max;
 public class Bot {
 
     private static final int maxSpeed = 9;
-    private List<Command> directionList = new ArrayList<>();
-
     private Random random;
     private GameState gameState;
     private Car opponent;
@@ -34,9 +32,6 @@ public class Bot {
         this.gameState = gameState;
         this.myCar = gameState.player;
         this.opponent = gameState.opponent;
-
-        directionList.add(TURN_LEFT);
-        directionList.add(TURN_RIGHT);
     }
 
     public Command run() {
@@ -211,7 +206,7 @@ public class Bot {
             if (hasPowerUp(PowerUps.OIL, myCar.powerups)) {
                 return OIL;
             }
-        } else {
+        } else if (myCar.position.block < opponent.position.block){
             if (myCar.position.lane == opponent.position.lane && hasPowerUp(PowerUps.EMP, myCar.powerups)) {
                 return EMP;
             }
@@ -222,10 +217,10 @@ public class Bot {
 
     /* Mengembalikan true jika mobil memiliki powerUps powerUpToCheck */
     private Boolean hasPowerUp(PowerUps powerUpToCheck, PowerUps[] available) {
+        if (available == null) {
+            return false;
+        }
         for (PowerUps powerUp: available) {
-            if (powerUp.equals(null)) {
-                return false;
-            }
             if (powerUp.equals(powerUpToCheck)) {
                 return true;
             }
@@ -261,7 +256,7 @@ public class Bot {
             }
             if (laneList[i].terrain == Terrain.MUD || laneList[i].terrain == Terrain.OIL_SPILL) {
                 sumDamage += 1;
-            } else if (laneList[i].terrain == Terrain.WALL || laneList[i].terrain == Terrain.TRUCK) {
+            } else if (laneList[i].terrain == Terrain.WALL || laneList[i].isOccupiedByCyberTruck) {
                 sumDamage += 2;
             }
         }
@@ -280,13 +275,21 @@ public class Bot {
                 break;
             }
             blocks.add(laneList[i].terrain);
+            if (laneList[i].isOccupiedByCyberTruck) {
+                blocks.add("TRUCK");
+            }
+            if (laneList[i].occupiedByPlayerId == opponent.id) {
+                blocks.add("OPPONENT");
+            }
         }
         return blocks;
     }
 
     /* Fungsi yang mengembalikan true jika block berisi obstacle */
     private boolean isBlocks(List<Object> block) {
-        return (block.contains(Terrain.MUD) || block.contains(Terrain.WALL) || block.contains(Terrain.OIL_SPILL) || block.contains(Terrain.TRUCK));
+        return (block.contains(Terrain.MUD) || block.contains(Terrain.WALL) ||
+                block.contains(Terrain.OIL_SPILL) || block.contains("TRUCK") ||
+                block.contains("OPPONENT"));
     }
 
     /* Fungsi yang mengembalikan true jika block berisi powerup */
