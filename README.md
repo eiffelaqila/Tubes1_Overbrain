@@ -1,12 +1,12 @@
 # Tubes Stima 1 by Overbrain
-> Overdrive car bot implementation written in Java. Based on the concept of Greedy algorithm.
+> _'Overdrive'_ car bot implementation written in Java. Based on the concept of Greedy algorithm.
 
 
 ## Table of Contents
 * [Introduction](#introduction)
 * [General Information](#general-information)
 * [Technologies Used](#technologies-used)
-* [Features](#features)
+* [Greedy Algorithm](#greedy-algorithm)
 * [Screenshot](#screenshot)
 * [Setup](#setup)
 * [Project Status](#project-status)
@@ -28,17 +28,18 @@ This project was created by:
 
 
 ## General Information
-(Nanti tulis dalam bahasa Inggris)
-Overdrive adalah sebuah game yang mempertandingan 2 bot mobil dalam sebuah ajang balapan. Setiap pemain akan memiliki sebuah bot mobil dan masing-masing bot akan saling bertanding untuk mencapai garis finish dan memenangkan pertandingan. Agar dapat memenangkan pertandingan, setiap pemain harus mengimplementasikan strategi tertentu untuk dapat mengalahkan lawannya.
+_Overdrive_ is a game where 2 car bots compete in a racing event. Each player will have a car bot and each bot will compete with each other to reach the finish line and win the match. In order to win the match, each player must implement a certain strategy to be able to beat his opponent.
 
-This Overdrive car bot implementation program was created in Java language and used a Greedy algorithm. This program accepts input in the form of...
+Our task here is to implement a car bot in the game _'Overdrive'_ with the use Greedy algorithm strategy to win the game. To implement With these bots, students are advised to use the available game engine and continue developing the program written in the starter-bots at in starter-pack.
+
+This Overdrive car bot implementation program was developed in Java language. The game specification that was used to build this bot is based on the [game rules]{https://github.com/EntelectChallenge/2020-Overdrive/blob/develop/game-engine/game-rules.md) that is provided on _'Overdrive'_ game engine.
 
 
 ## Technologies Used
-The whole program was written in Java.
+The whole car bot implementation program was written in Java using IntelliJ IDEA.
 
 
-## Features
+## Greedy Algorithm
 - [x] 
 - [x] 
 - [x] 
@@ -52,12 +53,16 @@ The whole program was written in Java.
 
 ## Setup
 ### Installation
-- Download and install [Java](https://www.java.com/en/download/)
+- Download and install [Java](https://www.oracle.com/java/technologies/downloads/#java8) (Min. Java 8) 
 - Download and install [Java Development Kit](https://www.oracle.com/java/technologies/downloads/)
 - Download and install [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 - Download and install [NodeJS](https://nodejs.org/en/download/)
+
+### Requirement
 - Install the whole modules and [libraries](#library) used in the source code
 - Download the whole folders and files in this repository or do clone the repository
+- Download Official Entelect Challenge 2020 Overdrive [Game Engine](https://github.com/EntelectChallenge/2020-Overdrive/releases/tag/2020.3.4)
+- (Optional) Download Official Entelect Challenge 2020 Overdrive [Visualizer](https://github.com/Affuta/overdrive-round-runner)
 
 ### Execution
 1. Clone this repository in your own local directory
@@ -70,8 +75,6 @@ The whole program was written in Java.
     
 3. Run `java Main` on the command line
 
-### Requirement
-
 
 ## Project Status
 Project is: _complete_
@@ -81,11 +84,11 @@ All the specifications were implemented.
 
 ## Room for Improvement
 - A faster or more efficient algorithm to make the program run quicker
-- A better interface development to satisfy the users
+- A superior strategy to increase the chances of winning the match
 
 
 ## Acknowledgements
-- This project was based on [Spesifikasi Tugas Besar 1 Stima](https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2021-2022/Tugas-Besar-1-IF2211-Strategi-Algoritma-2022.pdf)
+- This project was based on [Spesifikasi Tugas Besar 1 Stima](https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2021-2022/Tugas-Besar-1-IF2211-Strategi-Algoritma-2022.pdf) and [Official Entelect Challenge 2020 Overdrive](https://github.com/EntelectChallenge/2020-Overdrive)
 - Thanks to God
 - Thanks to Mrs. Masayu Leylia Khodra, Mrs. Nur Ulfa Maulidevi, and Mr. Rinaldi as our lecturers
 - Thanks to academic assistants
@@ -93,7 +96,7 @@ All the specifications were implemented.
 
 
 ## Library
-- [time](https://www.tutorialspoint.com/c_standard_library/time_h.htm) (contoh doang)
+- [time](https://www.tutorialspoint.com/c_standard_library/time_h.htm) (contoh doang, kalau gak ada atau gak mau tulis boleh apus)
 
 
 ## Contact
