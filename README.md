@@ -6,7 +6,7 @@
 * [Introduction](#introduction)
 * [General Information](#general-information)
 * [Technologies Used](#technologies-used)
-* [Greedy Algorithm](#greedy-algorithm)
+* [Greedy Strategy](#greedy-strategy)
 * [Screenshot](#screenshot)
 * [Setup](#setup)
 * [Project Status](#project-status)
@@ -32,17 +32,17 @@ _Overdrive_ is a game where 2 car bots compete in a racing event. Each player wi
 
 Our task here is to implement a car bot in the game _'Overdrive'_ with the use Greedy algorithm strategy to win the game. To implement With these bots, students are advised to use the available game engine and continue developing the program written in the starter-bots at in starter-pack.
 
-This Overdrive car bot implementation program was developed in Java language. The game specification that was used to build this bot is based on the [game rules]{https://github.com/EntelectChallenge/2020-Overdrive/blob/develop/game-engine/game-rules.md) that is provided on _'Overdrive'_ game engine.
+This Overdrive car bot implementation program was developed in Java language. The game specification that was used to build this bot is based on the [game rules](https://github.com/EntelectChallenge/2020-Overdrive/blob/develop/game-engine/game-rules.md) that is provided on _'Overdrive'_ game engine.
 
 
 ## Technologies Used
 The whole car bot implementation program was written in Java using IntelliJ IDEA.
 
 
-## Greedy Algorithm
-- [x] 
-- [x] 
-- [x] 
+## Greedy Strategy
+- [x] (Strategy 1)
+- [x] (Strategy 2)
+- [x] dst.
 - [x] 
 - [x] 
 
