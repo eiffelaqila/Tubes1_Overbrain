@@ -134,8 +134,9 @@ public class Bot {
         }
 
         /* Prioritas 4 & Strategi Max Speed */
-        if ((myCar.speed < 9 && myCar.damage < 2) || (myCar.speed < 8 && myCar.damage == 2) ||
-                (myCar.speed < 6 && myCar.damage == 3) || (myCar.speed < 3 && myCar.damage == 4)) {
+        if (((myCar.speed < 9 && myCar.damage < 2) || (myCar.speed < 8 && myCar.damage == 2) ||
+                (myCar.speed < 6 && myCar.damage == 3) || (myCar.speed < 3 && myCar.damage == 4)) &&
+                !isBlocks(blocks)) {
             return ACCELERATE;
         }
 
