@@ -40,11 +40,11 @@ The whole car bot implementation program was written in Java using IntelliJ IDEA
 
 
 ## Greedy Strategy
-- [x] (Strategy 1)
-- [x] (Strategy 2)
-- [x] dst.
-- [x] 
-- [x] 
+Berdasarkan eksplorasi alternatif Algoritma Greedy di atas, kelompok kami memutuskan untuk menggabungkan strategi-strategi tersebut. Hal yang menjadi pertimbangan utama atas keputusan itu adalah fakta bahwa setiap strategi di atas hanya efektif dan dapat digunakan dalam beberapa kasus saja untuk setiap rondenya. Dengan demikian, penggabungan strategi-strategi tersebut dinilai lebih mampu secara efektif untuk menangani seluruh kasus atau skema yang ada selama permainan ketimbang memilih salah satu yang terbaik di antaranya.
+
+Pada implementasi program, akhirnya kami menggabungkan dan memodifikasi kelima strategi tersebut. Untuk menangani kasus-kasus tertentu, kami berpikir bahwa diperlukan adanya pengaturan urutan prioritas strategi yang kemudian coba kami kombinasikan untuk menemukan mana kombinasi urutan yang paling optimal. Hasil yang kelompok dapatkan ialah kombinasi strategi dengan urutan sebagai berikut: strategi pemrioritasan perbaikan, strategi pemrioritasan penghindaran obstacle, strategi pemrioritasan pemaksimalan kecepatan, strategi pemrioritasan pencarian power-ups, dan yang terakhir strategi pemrioritasan pemanfaatan power-ups. Di samping itu, apabila berdasarkan command yang digunakan, urutan prioritasnya, yaitu perintah SAVETHECAR, AVOID, TURBO, MAXSPEED, GETPOWERUP, dan USEOIL/USEEMP/USETWEET.
+
+Urutan prioritas yang kami tentukan terakhir kali berasal dari proses trial and error yang kami ujikan pada reference bot. Hasilnya, prioritas yang disusun demikian menghasilkan win rate tertinggi dibandingkan dengan variasi-variasi lainnya. Berdasarkan pengujian yang telah kami lakukan juga, terdapat kondisi-kondisi tertentu yang tidak dapat dihindari dalam mempengaruhi hasil akhir dari pertandingan mobil kami di permainan Overdrive ini, misalnya, bentuk atau kondisi maps yang dipakai pada pertandingan tersebut.
 
 
 ## Screenshot
