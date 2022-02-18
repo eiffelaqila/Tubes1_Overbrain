@@ -47,10 +47,6 @@ Pada implementasi program, akhirnya kami menggabungkan dan memodifikasi kelima s
 Urutan prioritas yang kami tentukan terakhir kali berasal dari proses trial and error yang kami ujikan pada reference bot. Hasilnya, prioritas yang disusun demikian menghasilkan win rate tertinggi dibandingkan dengan variasi-variasi lainnya. Berdasarkan pengujian yang telah kami lakukan juga, terdapat kondisi-kondisi tertentu yang tidak dapat dihindari dalam mempengaruhi hasil akhir dari pertandingan mobil kami di permainan Overdrive ini, misalnya, bentuk atau kondisi maps yang dipakai pada pertandingan tersebut.
 
 
-## Screenshot
-{Insert screenshot here}
-
-
 ## Setup
 ### Installation
 - Download and install [Java](https://www.oracle.com/java/technologies/downloads/#java8) (Min. Java 8) 
@@ -99,10 +95,6 @@ All the specifications were implemented.
 - Thanks to Mrs. Masayu Leylia Khodra, Mrs. Nur Ulfa Maulidevi, and Mr. Rinaldi as our lecturers
 - Thanks to academic assistants
 - This project was created to fulfill our Big Project for IF2211 Algorithm Strategies
-
-
-## Library
-- [time](https://www.tutorialspoint.com/c_standard_library/time_h.htm) (contoh doang, kalau gak ada atau gak mau tulis boleh apus)
 
 
 ## Contact
