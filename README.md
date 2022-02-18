@@ -77,15 +77,9 @@ Urutan prioritas yang kami tentukan terakhir kali berasal dari proses trial and 
 - Selain itu, jangan lupa untuk tetap mengubah source code program dengan mengganti folder starter-bots dengan folder src yang ada di repositori ini.
 
 ### Execution
-1. Clone this repository in your own local directory
-
-    `git clone https://github.com/eiffelaqila/Tubes1_Overbrain.git`
-
-2. Open the command line and change the directory to 'bin' folder
-
-    `cd Tubes1_Overbrain/bin`
-    
-3. Run `java Main` on the command line
+- Setelah semua konfigurasi dilakukan dengan benar, maka kita bisa langsung menjalankan run.bat atau make run di Linux yang ada di starter-pack.
+- Akan ditampilkan permainan dalam Terminal yang digunakan dalam perangkat lunak. Arsip dari permainan ini akan dimasukkan ke dalam folder match-logs.
+- Petunjuk-petunjuk konfigurasi permainan sudah ada sebagai README di dalam folder-folder yang ada di dalam starter-pack untuk dieksplorasi lebih lanjut.
 
 
 ## Project Status
