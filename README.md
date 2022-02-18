@@ -7,12 +7,10 @@
 * [General Information](#general-information)
 * [Technologies Used](#technologies-used)
 * [Greedy Strategy](#greedy-strategy)
-* [Screenshot](#screenshot)
 * [Setup](#setup)
 * [Project Status](#project-status)
 * [Room for Improvement](#room-for-improvement)
 * [Acknowledgements](#acknowledgements)
-* [Library](#library)
 * [Contact](#contact)
 
 
