@@ -38,11 +38,27 @@ The whole car bot implementation program was written in Java using IntelliJ IDEA
 
 
 ## Greedy Strategy
+### Strategi Pemrioritasan Perbaikan
+Strategi Pemrioritasan Perbaikan atau Save The Car Greedy merupakan strategi untuk mempertahankan mobil dalam kondisi tidak memiliki damage sama sekali atau damage sebesar 0 dengan cara memperbaiki mobil ketika menerima damage. Pada setiap ronde, jika mobil menabrak obstacle, pilih command FIX hingga damage pada mobil mencapai 0. Jika mobil tidak menerima damage atau damage sebesar 0, strategi ini tidak dapat digunakan.
+
+### Strategi Pemrioritasan Penghindaran Obstacle
+Strategi Pemrioritasan Penghindaran Obstacle atau Avoid Greedy merupakan strategi untuk mempertahankan mobil dalam kondisi tidak memiliki damage sama sekali atau damage sebesar 0 dengan cara menghindari obstacle. Pada setiap ronde, jika mobil melihat adanya obstacle di hadapannya, mobil akan berbelok ke jalur yang bersebelahan, yakni arah kiri atau kanan, yang tidak memiliki obstacle di jalur tersebut dengan memilih command TURN_LEFT atau TURN_RIGHT. Jika terdapat obstacle di hadapan dan jalur sebelah mobil dan mobil memiliki LIZARD, mobil akan memilih command USE_LIZARD sedangkan jika mobil tidak memiliki LIZARD, mobil akan memilih jalur dengan damage yang paling rendah untuk berbelok. Jika mobil tidak melihat adanya obstacle di hadapannya, strategi ini tidak dapat digunakan.
+
+### Strategi Pemrioritasan Pemaksimalan Kecepatan
+Strategi Pemrioritasan Pemaksimalan Kecepatan atau Max Speed and Turbo Greedy merupakan strategi untuk meningkatkan kecepatan bot mobil hingga mencapai batas kecepatan maksimal. Pada setiap ronde, jika mobil tidak memiliki damage sebesar 5, pilih command USE_BOOST jika memiliki BOOST atau ACCELERATE jika tidak dengan tujuan untuk mempercepat kecepatan mobil hingga mencapai MAX SPEED. Jika mobil memiliki damage sebesar 5, strategi ini tidak dapat digunakan. 
+
+### Strategi Pemrioritasan Pencarian Power-Ups 
+Strategi Pemrioritasan Pencarian Power-Ups atau GetPowerUp Greedy merupakan strategi untuk mencari power-ups yang bisa didapatkan mobil pada setiap ronde permainan. Pada setiap ronde, jika mobil menemukan power up di jalur hadapannya, mobil akan tetap melaju. Namun, jika mobil menemukan power up di jalur sebelah kiri, mobil akan memanggil command TURN_LEFT, sebaliknya jika menemukan power up di jalur sebelah kanan, mobil akan memanggil command TURN_RIGHT. Jika tidak ada power up di sekitar mobil, strategi ini tidak dapat digunakan.
+
+### Strategi Pemrioritasan Pemanfaatan Power-Ups 
+Strategi Pemrioritasan Pemanfaatan Power-Ups atau USE_TWEET - USE_OIL - USE_EMP Greedy merupakan strategi untuk memaksimalkan pemanfaatan power-ups yang bisa didapatkan mobil pada setiap ronde permainan. Penggunaan power up memiliki syarat, yakni mobil telah mencapai kecepatan maksimum dan tidak terdapat obstacle di hadapan mobil. Pada setiap ronde, jika syarat terpenuhi dan mobil memiliki power up TWEET, mobil akan memanggil command USE_TWEET dan menempatkan Cyber Truck di jalur hadapan mobil musuh. Jika syarat terpenuhi, mobil memiliki power up OIL, dan musuh berada di belakang mobil pemain, mobil akan memanggil command USE_OIL. Jika syarat terpenuhi dan mobil memiliki power up EMP, dan musuh berada di depan mobil pemain, mobil akan memanggil command USE_EMP. Jika kondisi di atas tidak dipenuhi, strategi ini tidak dapat digunakan.
+
+### Pemilihan Algoritma Greedy
 Berdasarkan eksplorasi alternatif Algoritma Greedy di atas, kelompok kami memutuskan untuk menggabungkan strategi-strategi tersebut. Hal yang menjadi pertimbangan utama atas keputusan itu adalah fakta bahwa setiap strategi di atas hanya efektif dan dapat digunakan dalam beberapa kasus saja untuk setiap rondenya. Dengan demikian, penggabungan strategi-strategi tersebut dinilai lebih mampu secara efektif untuk menangani seluruh kasus atau skema yang ada selama permainan ketimbang memilih salah satu yang terbaik di antaranya.
 
 Pada implementasi program, akhirnya kami menggabungkan dan memodifikasi kelima strategi tersebut. Untuk menangani kasus-kasus tertentu, kami berpikir bahwa diperlukan adanya pengaturan urutan prioritas strategi yang kemudian coba kami kombinasikan untuk menemukan mana kombinasi urutan yang paling optimal. Hasil yang kelompok dapatkan ialah kombinasi strategi dengan urutan sebagai berikut: strategi pemrioritasan perbaikan, strategi pemrioritasan penghindaran obstacle, strategi pemrioritasan pemaksimalan kecepatan, strategi pemrioritasan pencarian power-ups, dan yang terakhir strategi pemrioritasan pemanfaatan power-ups. Di samping itu, apabila berdasarkan command yang digunakan, urutan prioritasnya, yaitu perintah SAVETHECAR, AVOID, TURBO, MAXSPEED, GETPOWERUP, dan USEOIL/USEEMP/USETWEET.
 
-Urutan prioritas yang kami tentukan terakhir kali berasal dari proses trial and error yang kami ujikan pada reference bot. Hasilnya, prioritas yang disusun demikian menghasilkan win rate tertinggi dibandingkan dengan variasi-variasi lainnya. Berdasarkan pengujian yang telah kami lakukan juga, terdapat kondisi-kondisi tertentu yang tidak dapat dihindari dalam mempengaruhi hasil akhir dari pertandingan mobil kami di permainan Overdrive ini, misalnya, bentuk atau kondisi maps yang dipakai pada pertandingan tersebut.
+Urutan prioritas yang kami tentukan terakhir kali berasal dari proses trial and error yang kami ujikan pada reference bot. Hasilnya, prioritas yang disusun demikian menghasilkan win rate tertinggi dibandingkan dengan variasi-variasi lainnya. Berdasarkan pengujian yang telah kami lakukan juga, terdapat kondisi-kondisi tertentu yang tidak dapat dihindari dalam mempengaruhi hasil akhir dari pertandingan mobil kami di permainan _Overdrive_ ini, misalnya, bentuk atau kondisi maps yang dipakai pada pertandingan tersebut.
 
 
 ## Setup
@@ -53,7 +69,6 @@ Urutan prioritas yang kami tentukan terakhir kali berasal dari proses trial and 
 - Download and install [NodeJS](https://nodejs.org/en/download/)
 
 ### Requirement
-- Install the whole modules and [libraries](#library) used in the source code
 - Download the whole folders and files in this repository or do clone the repository
 - Download Official Entelect Challenge 2020 Overdrive [Game Engine](https://github.com/EntelectChallenge/2020-Overdrive/releases/tag/2020.3.4)
 - (Optional) Download Official Entelect Challenge 2020 Overdrive [Visualizer](https://github.com/Affuta/overdrive-round-runner)
